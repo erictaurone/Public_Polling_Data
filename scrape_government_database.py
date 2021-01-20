@@ -4,6 +4,7 @@ import json
 import pandas as pd
 import numpy as np
 import psycopg2
+
 # %%
 # I found it easier to just use the .csv link for all petitions
 csv_link = 'https://petition.parliament.uk/petitions.csv'
@@ -12,7 +13,6 @@ csv_link = 'https://petition.parliament.uk/petitions.csv'
 # to go through all of the available information
 bulk_petition_data = pd.read_csv(csv_link)
 bulk_petition_data = bulk_petition_data[bulk_petition_data['State'] == 'open'].reset_index(drop=True)
-
 
 # %%
 # this is the section to connect to Postgresql database
@@ -23,6 +23,16 @@ conn = psycopg2.connect(
     host='ec2-54-237-135-248.compute-1.amazonaws.com',
     port='5432'
 )
+
+curr = conn.cursor()
+
+
+def create_new_tables(curr):
+    """
+    :arg
+    """
+    return
+
 
 # %%
 # creating a dict for the bulk json data
