@@ -12,6 +12,7 @@ psycopg2 = "*"
 numpy = "*"
 pandas = "*"
 socialreaper = "*"
+sqlalchemy = "*"
 
 [requires]
 python_version = "3.7"

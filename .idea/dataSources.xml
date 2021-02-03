@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="Public_Polling.db" uuid="b286e21a-8f4a-442e-85b6-f19c99b1d0a1">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <remarks>Database for Public Polling project</remarks>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:C:\Users\Eric Taurone\PycharmProjects\Public_Polling_Data\Public_Polling.db</jdbc-url>
+    </data-source>
+  </component>
+</project>

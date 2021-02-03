@@ -4,7 +4,7 @@ import json
 import pandas as pd
 import numpy as np
 import psycopg2
-
+import models
 # %%
 # I found it easier to just use the .csv link for all petitions
 csv_link = 'https://petition.parliament.uk/petitions.csv'
@@ -12,7 +12,8 @@ csv_link = 'https://petition.parliament.uk/petitions.csv'
 # reading the bulk petitions and filtering it for only the 'open' petitions -- data was too massive
 # to go through all of the available information
 bulk_petition_data = pd.read_csv(csv_link)
-bulk_petition_data = bulk_petition_data[bulk_petition_data['State'] == 'open'].reset_index(drop=True)
+bulk_petition_data = bulk_petition_data[(bulk_petition_data['State'] == 'open') & (bulk_petition_data['Signatures Count'] > 1000)].reset_index(drop=True)
+
 
 # %%
 # this is the section to connect to Postgresql database
@@ -47,3 +48,15 @@ for k, row in bulk_petition_data.iterrows():
 
 # %%
 data = pd.DataFrame(json_data['data']['attributes']['signatures_by_constituency'])
+# %%
+
+
+class RawPollingData(models.Model):
+    signatures = models.IntegerField()
+    extraction_date = models.DateTimeField()
+    constituency = models.CharField(max_length=100)
+
+    def __str__(self):
+        return str(self.extraction_date) + ' ' + str(self.constituency)
+
+test = RawPollingData()
