@@ -1,9 +1,16 @@
 import sqlalchemy as sqla
-
-engine = sqla.create_engine('sqlite:///Public_Polling.db', echo=True)
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
+import psycopg2
 
+DB_NAME = 'd7i9p9ekakqj4i'
+USER = 'tnoeifjjdvhgnb'
+PASSWORD = '0bda6e63547e198aec6dd67d9e45c1bffde267a688ce53551550b72eda92d99b'
+HOST = 'ec2-54-237-135-248.compute-1.amazonaws.com'
+PORT = '5432'
+eng_str = r'postgres://%s:%s@%s:%s/%s' % (USER, PASSWORD, HOST, PORT, DB_NAME)
+# engine = sqla.create_engine(eng_str, echo=True)
+engine = sqla.create_engine('sqlite:///Public_Polling.db')
 Base = declarative_base()
 
 
@@ -14,6 +21,7 @@ class PetitionData(Base):
     __tablename__ = 'petition_level_data'
 
     id = sqla.Column(sqla.Integer, primary_key=True)
+    petition_category = sqla.Column(sqla.String)
     petition_id = sqla.Column(sqla.Integer)
     petition_action = sqla.Column(sqla.String)
     petition_background = sqla.Column(sqla.String)
