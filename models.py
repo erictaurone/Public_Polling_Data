@@ -1,4 +1,4 @@
-import sqlalchemy as sqla
+import sqlalchemy as db
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 import psycopg2
@@ -9,8 +9,8 @@ PASSWORD = '0bda6e63547e198aec6dd67d9e45c1bffde267a688ce53551550b72eda92d99b'
 HOST = 'ec2-54-237-135-248.compute-1.amazonaws.com'
 PORT = '5432'
 eng_str = r'postgres://%s:%s@%s:%s/%s' % (USER, PASSWORD, HOST, PORT, DB_NAME)
-# engine = sqla.create_engine(eng_str, echo=True)
-engine = sqla.create_engine('sqlite:///Public_Polling.db')
+# engine = db.create_engine(eng_str, echo=True)
+engine = db.create_engine('sqlite:///Public_Polling.db')
 Base = declarative_base()
 
 
@@ -20,33 +20,35 @@ class PetitionData(Base):
     """
     __tablename__ = 'petition_level_data'
 
-    id = sqla.Column(sqla.Integer, primary_key=True)
-    petition_category = sqla.Column(sqla.String)
-    petition_id = sqla.Column(sqla.Integer)
-    petition_action = sqla.Column(sqla.String)
-    petition_background = sqla.Column(sqla.String)
-    petition_state = sqla.Column(sqla.String)
-    create_time = sqla.Column(sqla.DateTime)
-    update_time = sqla.Column(sqla.DateTime)
-    open_time = sqla.Column(sqla.DateTime)
-    signature_count = sqla.Column(sqla.Integer)
+    id = db.Column(db.Integer, primary_key=True)
+    petition_category = db.Column(db.String)
+    petition_id = db.Column(db.Integer)
+    petition_action = db.Column(db.String)
+    petition_background = db.Column(db.String)
+    petition_state = db.Column(db.String)
+    create_time = db.Column(db.DateTime)
+    update_time = db.Column(db.DateTime)
+    open_time = db.Column(db.DateTime)
+    signature_count = db.Column(db.Integer)
 
 
 class RegionSpecificData(Base):
     """
     The RegionSpecificData class houses the drilldown of data specific to a given region at a snapshot in time
     """
+    
     __tablename__ = 'region_level_data'
 
-    id = sqla.Column(sqla.Integer, primary_key=True)
-    ons_code = sqla.Column(sqla.Integer)
-    signature_count = sqla.Column(sqla.Integer)
-    proportion_of_total = sqla.Column(sqla.Float)
-    petition_level_data_id = relationship('PetitionData', back_populates='region_level_data')
+    id = db.Column(db.Integer, primary_key=True)
+    ons_code = db.Column(db.Integer)
+    signature_count = db.Column(db.Integer)
+    proportion_of_total = db.Column(db.Float)
+    # petition_level_data_id = relationship('PetitionData', back_populates='region_level_data')
+    petition = db.Column('petition', db.String, db.ForeignKey('petition_level_data.id'))
 
 
-PetitionData.region_level_data = relationship('RegionSpecificData', order_by=RegionSpecificData.id,
-                                              back_populates='petition_level_data_id')
+# PetitionData.region_level_data = relationship('RegionSpecificData', order_by=RegionSpecificData.id,
+#                                               back_populates='petition_level_data_id')
 
 
 class RegionStatistics(Base):
@@ -55,14 +57,15 @@ class RegionStatistics(Base):
     """
     __tablename__ = 'region_level_statistics'
 
-    id = sqla.Column(sqla.Integer, primary_key=True)
-    statistic_name = sqla.Column(sqla.String)
-    statistic_value = sqla.Column(sqla.Float)
-    region_level_data_id = relationship('RegionSpecificData', back_populates='region_level_statistics')
+    id = db.Column(db.Integer, primary_key=True)
+    statistic_name = db.Column(db.String)
+    statistic_value = db.Column(db.Float)
+    # region_level_data_id = relationship('RegionSpecificData', back_populates='region_level_statistics')
+    region = db.Column('region', db.String, db.ForeignKey('region_level_data.id'))
 
 
-RegionSpecificData.region_level_statistics = relationship('RegionStatistics', order_by=RegionStatistics.id,
-                                                          back_populates='region_level_data_id')
+# RegionSpecificData.region_level_statistics = relationship('RegionStatistics', order_by=RegionStatistics.id,
+#                                                           back_populates='region_level_data_id')
 
 
 class PetitionStatistics(Base):
@@ -71,13 +74,14 @@ class PetitionStatistics(Base):
     """
     __tablename__ = 'petition_level_statistics'
 
-    id = sqla.Column(sqla.Integer, primary_key=True)
-    statistic_name = sqla.Column(sqla.String)
-    statistic_value = sqla.Column(sqla.Float)
-    petition_level_data_id = relationship('PetitionData', back_populates='petition_level_statistics')
+    id = db.Column(db.Integer, primary_key=True)
+    statistic_name = db.Column(db.String)
+    statistic_value = db.Column(db.Float)
+    # petition_level_data_id = relationship('PetitionData', back_populates='petition_level_statistics')
+    petition = db.Column('petition', db.String, db.ForeignKey('petition_level_data.id'))
 
 
-PetitionData.petition_level_statistics = relationship('RegionStatistics', order_by=PetitionStatistics.id,
-                                                      back_populates='petition_level_data_id')
+# PetitionData.petition_level_statistics = relationship('RegionStatistics', order_by=PetitionStatistics.id,
+                                                    #   back_populates='petition_level_data_id')
 
 Base.metadata.create_all(engine)
