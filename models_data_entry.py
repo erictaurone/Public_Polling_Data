@@ -16,7 +16,7 @@ session = Session()
 result = session.query(PetitionData)
 
 categorizedPetitionSample = pd.read_csv(
-    'https://github.com/erictaurone/Public_Polling_Data/raw/master/210210%20Catagorised%20Petitions.csv')
+    'https://raw.githubusercontent.com/erictaurone/Public_Polling_Data/master/210210_Catagorised_Petitions.csv')
 
 for i, row in categorizedPetitionSample.iterrows():
     # connecting to the .json file from the government database
